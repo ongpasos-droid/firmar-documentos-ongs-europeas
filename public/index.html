@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the European Network — EUDICAS & EUEMOTION</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ===== VIEW 1: LANDING / INFO ===== -->
+  <div id="view-landing" class="view active">
+    <div class="container">
+      <header class="hero">
+        <h1>Join the European Network</h1>
+        <p class="hero-sub">Sign your adhesion document in 2 minutes</p>
+      </header>
+
+      <section class="info-section">
+        <h2>What is this?</h2>
+        <p><strong>EUDICAS</strong> and <strong>EUEMOTION</strong> are European non-profit associations connecting entities across Europe for collaboration, innovation, and shared projects.</p>
+
+        <div class="benefits-grid">
+          <div class="benefit">
+            <div class="benefit-icon">&#9733;</div>
+            <h3>Completely FREE</h3>
+            <p>No membership fees, now or ever. No financial commitment of any kind.</p>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#10003;</div>
+            <h3>Zero Responsibility</h3>
+            <p>Adherent members have no governance duties. No binding obligations.</p>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#9829;</div>
+            <h3>Full Flexibility</h3>
+            <p>You can withdraw at any time with no consequences whatsoever.</p>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#127760;</div>
+            <h3>European Network</h3>
+            <p>Access to EU-funded projects, networking, training, and collaboration opportunities.</p>
+          </div>
+        </div>
+
+        <h2>How does it work?</h2>
+        <div class="steps-row">
+          <div class="step"><span class="step-num">1</span> Choose association</div>
+          <div class="step"><span class="step-num">2</span> Fill in basic details</div>
+          <div class="step"><span class="step-num">3</span> Sign &amp; submit</div>
+        </div>
+      </section>
+
+      <section class="select-section">
+        <h2>Select the association to join</h2>
+        <div class="cards-row">
+          <button class="card card-eudicas" onclick="selectAssociation('eudicas')">
+            <div class="card-name">E U D I C A S</div>
+            <div class="card-full">European Union Development, Innovation and Cooperation Association</div>
+            <div class="card-action">Join EUDICAS &rarr;</div>
+          </button>
+          <button class="card card-euemotion" onclick="selectAssociation('euemotion')">
+            <div class="card-name">E U E M O T I O N</div>
+            <div class="card-full">European Association for Emotional Management</div>
+            <div class="card-action">Join EUEMOTION &rarr;</div>
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 2: FORM ===== -->
+  <div id="view-form" class="view">
+    <div class="container">
+      <div class="form-header">
+        <button class="btn-back" onclick="goBack()">&larr; Back</button>
+        <div>
+          <h1 id="form-title" class="form-title">Adhesion Form</h1>
+          <p class="form-subtitle">Please fill in your entity's details and sign below</p>
+        </div>
+      </div>
+
+      <form id="adhesion-form" onsubmit="return false;">
+        <input type="hidden" id="association" name="association" value="">
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="representative_name">Full name of representative *</label>
+            <input type="text" id="representative_name" name="representative_name" required
+                   placeholder="e.g. Maria Garcia Lopez" autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label for="role">Role in the entity *</label>
+            <input type="text" id="role" name="role" required list="roles-list"
+                   placeholder="e.g. President">
+            <datalist id="roles-list">
+              <option value="President">
+              <option value="Director">
+              <option value="Chairperson">
+              <option value="General Manager">
+              <option value="Secretary General">
+              <option value="Vice President">
+              <option value="CEO">
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="entity_name">Name of the entity *</label>
+            <input type="text" id="entity_name" name="entity_name" required
+                   placeholder="e.g. Association XYZ">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="address">Entity address *</label>
+            <input type="text" id="address" name="address" required
+                   placeholder="e.g. 10 Main Street" autocomplete="street-address">
+          </div>
+
+          <div class="form-group">
+            <label for="postal_code">Postal code *</label>
+            <input type="text" id="postal_code" name="postal_code" required
+                   placeholder="e.g. 28001" autocomplete="postal-code">
+          </div>
+
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" name="city" required
+                   placeholder="e.g. Madrid" autocomplete="address-level2">
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country *</label>
+            <select id="country" name="country" required>
+              <option value="">Select country...</option>
+              <option value="Austria">Austria</option>
+              <option value="Belgium">Belgium</option>
+              <option value="Bulgaria">Bulgaria</option>
+              <option value="Croatia">Croatia</option>
+              <option value="Cyprus">Cyprus</option>
+              <option value="Czech Republic">Czech Republic</option>
+              <option value="Denmark">Denmark</option>
+              <option value="Estonia">Estonia</option>
+              <option value="Finland">Finland</option>
+              <option value="France">France</option>
+              <option value="Germany">Germany</option>
+              <option value="Greece">Greece</option>
+              <option value="Hungary">Hungary</option>
+              <option value="Iceland">Iceland</option>
+              <option value="Ireland">Ireland</option>
+              <option value="Italy">Italy</option>
+              <option value="Latvia">Latvia</option>
+              <option value="Liechtenstein">Liechtenstein</option>
+              <option value="Lithuania">Lithuania</option>
+              <option value="Luxembourg">Luxembourg</option>
+              <option value="Malta">Malta</option>
+              <option value="Netherlands">Netherlands</option>
+              <option value="North Macedonia">North Macedonia</option>
+              <option value="Norway">Norway</option>
+              <option value="Poland">Poland</option>
+              <option value="Portugal">Portugal</option>
+              <option value="Romania">Romania</option>
+              <option value="Serbia">Serbia</option>
+              <option value="Slovakia">Slovakia</option>
+              <option value="Slovenia">Slovenia</option>
+              <option value="Spain">Spain</option>
+              <option value="Sweden">Sweden</option>
+              <option value="Switzerland">Switzerland</option>
+              <option value="Turkey">Turkey</option>
+              <option value="United Kingdom">United Kingdom</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address *</label>
+            <input type="email" id="email" name="email" required
+                   placeholder="e.g. contact@entity.org" autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone (optional)</label>
+            <input type="tel" id="phone" name="phone"
+                   placeholder="e.g. +34 600 000 000" autocomplete="tel">
+          </div>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature-section">
+          <label>Your signature *</label>
+          <p class="sig-instruction">Sign below with your finger (mobile) or mouse (desktop)</p>
+          <div class="signature-wrapper">
+            <canvas id="signature-pad"></canvas>
+          </div>
+          <button type="button" class="btn-clear" onclick="clearSignature()">Clear signature</button>
+        </div>
+
+        <!-- Acceptance -->
+        <div class="acceptance">
+          <label class="checkbox-label">
+            <input type="checkbox" id="accept" required>
+            <span>I have read and accept the terms of the adhesion document. I confirm that I am authorised to act on behalf of my entity and that all information provided is accurate.</span>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-section">
+          <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">
+            Sign &amp; Submit
+          </button>
+          <p class="submit-note">A signed PDF will be sent to your email address.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 3: CONFIRMATION ===== -->
+  <div id="view-confirmation" class="view">
+    <div class="container confirmation">
+      <div class="confirm-icon">&#10003;</div>
+      <h1>Document Signed Successfully</h1>
+      <p>Thank you! Your adhesion document has been signed and submitted.</p>
+      <p><strong>A signed copy has been sent to your email address.</strong></p>
+      <p class="confirm-note">If you don't see it in your inbox within a few minutes, please check your spam folder.</p>
+      <button class="btn-new" onclick="resetForm()">Sign another document</button>
+    </div>
+  </div>
+
+  <!-- ===== LOADING OVERLAY ===== -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Generating and sending your document...</p>
+    <p class="loading-sub">This may take a few seconds</p>
+  </div>
+
+  <script src="/js/signature_pad.umd.min.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

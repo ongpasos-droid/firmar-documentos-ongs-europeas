@@ -1,0 +1,20 @@
+{
+  "name": "firmas-adhesion",
+  "version": "1.0.0",
+  "description": "Digital signature system for EUDICAS & EUEMOTION adhesion documents",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.0",
+    "helmet": "^7.1.0",
+    "nodemailer": "^6.9.0",
+    "puppeteer": "^22.0.0"
+  }
+}
