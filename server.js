@@ -353,6 +353,7 @@ app.get('/api/preview/:association', (req, res) => {
     html = html.replace(/<div class="signature-section"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/, '');
     // Inject override CSS before </head> to neutralise print/A4 constraints
     const overrideCSS = `<style>
+      html { overflow: hidden !important; }
       body {
         height: auto !important;
         min-height: unset !important;
