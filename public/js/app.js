@@ -64,6 +64,14 @@ async function loadDocumentPreview(assoc) {
     iframe.contentDocument.open();
     iframe.contentDocument.write(html);
     iframe.contentDocument.close();
+
+    // Auto-adjust iframe height to content so the outer box scroll works correctly
+    iframe.addEventListener('load', () => {
+      try {
+        const h = iframe.contentDocument.body.scrollHeight;
+        if (h > 0) iframe.style.height = h + 'px';
+      } catch (_) {}
+    });
   } catch (err) {
     previewBox.innerHTML = '<div class="doc-preview-loading" style="color:#c0392b;">Could not load document preview.</div>';
   }

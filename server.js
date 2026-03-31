@@ -336,7 +336,7 @@ app.get('/api/download/:id', (req, res) => {
   res.sendFile(path.resolve(row.pdf_path));
 });
 
-// Document preview endpoint — returns plain text content of a template
+// Document preview endpoint — serves template with print constraints removed for readable preview
 app.get('/api/preview/:association', (req, res) => {
   const assoc = req.params.association.toLowerCase();
   if (!['eudicas', 'euemotion'].includes(assoc)) {
@@ -347,8 +347,25 @@ app.get('/api/preview/:association', (req, res) => {
     : 'adhesion-euemotion.html';
   try {
     let html = fs.readFileSync(path.join(__dirname, 'templates', templateFile), 'utf8');
-    // Strip placeholder tokens so preview shows clean template text
+    // Strip placeholder tokens
     html = html.replace(/\{\{[^}]+\}\}/g, '___');
+    // Hide signature section (not relevant in preview)
+    html = html.replace(/<div class="signature-section"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/, '');
+    // Inject override CSS before </head> to neutralise print/A4 constraints
+    const overrideCSS = `<style>
+      body {
+        height: auto !important;
+        min-height: unset !important;
+        overflow: visible !important;
+        max-width: 100% !important;
+        padding: 20px 18px !important;
+        display: block !important;
+      }
+      .spacer { display: none !important; }
+      .doc-footer { margin-top: 16px !important; }
+      .signature-section { display: none !important; }
+    </style>`;
+    html = html.replace('</head>', overrideCSS + '</head>');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(html);
   } catch (err) {
