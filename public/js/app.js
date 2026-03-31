@@ -188,11 +188,16 @@ async function submitForm() {
         btnDownload.style.display = 'none';
       }
 
-      // Improvement 3: check if sequential flow is needed
+      // Sequential flow logic
       const isSecondFlow = (firstSignatureData !== null);
 
+      // Hide all sub-sections first
+      document.getElementById('confirm-next-section').style.display = 'none';
+      document.getElementById('confirm-final-msg').style.display = 'none';
+      document.getElementById('confirm-single-done').style.display = 'none';
+
       if (!isSecondFlow) {
-        // First signature: save personal data and check if second is available
+        // First signature: save personal data and show prompt for second
         firstSignatureData = { ...data };
         firstSignatureAssoc = currentAssociation;
         const otherAssoc = currentAssociation === 'eudicas' ? 'euemotion' : 'eudicas';
@@ -200,26 +205,21 @@ async function submitForm() {
           ? 'EUDICAS (European Union Development, Innovation and Cooperation Association)'
           : 'EUEMOTION (European Association for Emotional Management)';
 
-        showView('view-confirmation');
-
-        // Show second-signature prompt after a short delay
-        setTimeout(() => {
-          document.getElementById('second-prompt-text').textContent =
-            `You have signed for ${currentAssociation.toUpperCase()}. You also need to sign the adhesion document for ${otherAssocName}. Would you like to continue?`;
-          const continueBtn = document.getElementById('btn-continue-second');
-          continueBtn.className = otherAssoc === 'euemotion'
-            ? 'btn-submit euemotion'
-            : 'btn-submit';
-          continueBtn.dataset.nextAssoc = otherAssoc;
-          showView('view-second-prompt');
-        }, 3000);
+        document.getElementById('confirm-next-text').textContent =
+          `You have signed for ${currentAssociation.toUpperCase()}. You also need to sign the adhesion document for ${otherAssocName}.`;
+        const continueBtn = document.getElementById('btn-continue-second');
+        continueBtn.className = otherAssoc === 'euemotion' ? 'btn-submit euemotion' : 'btn-submit';
+        continueBtn.dataset.nextAssoc = otherAssoc;
+        document.getElementById('confirm-next-section').style.display = 'block';
 
       } else {
-        // Second (or subsequent) signature: just show confirmation and stay there
+        // Second signature done: both complete, show final message
         firstSignatureData = null;
         firstSignatureAssoc = '';
-        showView('view-confirmation');
+        document.getElementById('confirm-final-msg').style.display = 'block';
       }
+
+      showView('view-confirmation');
     } else {
       showError(result.error || 'An error occurred. Please try again.');
     }

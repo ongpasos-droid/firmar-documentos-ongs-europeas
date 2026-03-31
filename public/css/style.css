@@ -419,13 +419,15 @@ body {
 .doc-preview-box {
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
-  max-height: 300px;
-  overflow: hidden;
-  background: #fafafa;
+  height: 480px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: white;
+  -webkit-overflow-scrolling: touch;
 }
 .doc-preview-iframe {
   width: 100%;
-  height: 300px;
+  height: 900px;
   border: none;
   display: block;
   background: white;
@@ -456,19 +458,58 @@ body {
   transform: translateY(-1px);
 }
 
-/* ===== SECOND SIGNATURE PROMPT (Improvement 3) ===== */
-.confirm-icon-info {
-  background: #e67e22 !important;
+/* ===== CONFIRMATION EXTENDED ===== */
+.confirm-divider {
+  border: none;
+  border-top: 1.5px solid #e5e7eb;
+  margin: 28px 0 24px;
 }
-.second-prompt-buttons {
-  margin-top: 24px;
+.confirm-next-box {
+  background: #fff8ec;
+  border: 1.5px solid #f59e0b;
+  border-radius: 12px;
+  padding: 20px 18px;
+  text-align: center;
+}
+.confirm-next-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f59e0b;
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  margin: 0 auto 12px;
 }
-.second-prompt-buttons .btn-submit {
+.confirm-next-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+#confirm-next-text {
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.confirm-next-hint {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+.confirm-next-box .btn-submit {
+  margin: 0 auto 12px;
+  display: block;
   max-width: 320px;
+}
+.confirm-all-done {
+  font-size: 18px;
+  font-weight: 600;
+  color: #16a34a;
+  margin-bottom: 16px;
 }
 .btn-new-skip {
   background: #888;

@@ -227,28 +227,38 @@
     <div class="container confirmation">
       <div class="confirm-icon">&#10003;</div>
       <h1>Document Signed Successfully</h1>
-      <p>Thank you! Your adhesion document has been signed and submitted.</p>
+      <p>Your adhesion document has been signed and submitted.</p>
       <p><strong>A signed copy has been sent to your email address.</strong></p>
       <p class="confirm-note">If you don't see it in your inbox within a few minutes, please check your spam folder.</p>
       <a id="btn-download-pdf" class="btn-download" href="#" download style="display:none;">
         &#8595; Download my signed copy
       </a>
-      <button class="btn-new" onclick="resetForm()">Sign another document</button>
-    </div>
-  </div>
 
-  <!-- ===== VIEW 4: SECOND SIGNATURE PROMPT ===== -->
-  <div id="view-second-prompt" class="view">
-    <div class="container confirmation">
-      <div class="confirm-icon confirm-icon-info">&#33;</div>
-      <h1>One more document</h1>
-      <p id="second-prompt-text"></p>
-      <p>Your personal details are already filled in — you only need to add your signature.</p>
-      <div class="second-prompt-buttons">
-        <button class="btn-submit" id="btn-continue-second" onclick="startSecondFlow()">
-          Continue &rarr;
-        </button>
-        <button class="btn-new btn-new-skip" onclick="resetForm()">No thanks, finish</button>
+      <!-- Shown after first signature: prompt to sign the second -->
+      <div id="confirm-next-section" style="display:none;">
+        <div class="confirm-divider"></div>
+        <div class="confirm-next-box">
+          <div class="confirm-next-icon">&#33;</div>
+          <p class="confirm-next-title">One more document to sign</p>
+          <p id="confirm-next-text"></p>
+          <p class="confirm-next-hint">Your personal details are already filled in — you only need to add your signature.</p>
+          <button class="btn-submit" id="btn-continue-second" onclick="startSecondFlow()">
+            Continue to next document &rarr;
+          </button>
+          <button class="btn-new btn-new-skip" onclick="resetForm()">No thanks, I&rsquo;m done</button>
+        </div>
+      </div>
+
+      <!-- Shown after both signatures are done -->
+      <div id="confirm-final-msg" style="display:none;">
+        <div class="confirm-divider"></div>
+        <p class="confirm-all-done">&#127881; Both documents signed. You&rsquo;re all set!</p>
+        <button class="btn-new" onclick="resetForm()">Return to start</button>
+      </div>
+
+      <!-- Shown when only one signature (no second flow) -->
+      <div id="confirm-single-done" style="display:none;">
+        <button class="btn-new" onclick="resetForm()">Return to start</button>
       </div>
     </div>
   </div>
