@@ -114,6 +114,11 @@ body {
   border-color: #003399;
   background: #eef2ff;
 }
+.euemotion-link { color: #6B2D8B; }
+.euemotion-link:hover {
+  border-color: #6B2D8B;
+  background: #f5eeff;
+}
 .doc-link-soon {
   color: #aaa;
   background: #f5f5f5;
