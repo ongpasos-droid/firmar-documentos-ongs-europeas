@@ -14,6 +14,9 @@ const PORT = process.env.PORT || 3000;
 
 // --------------- MIDDLEWARE ---------------
 
+// Trust proxy (needed behind Nginx/reverse-proxy for correct IP detection and rate limiting)
+app.set('trust proxy', 1);
+
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false
