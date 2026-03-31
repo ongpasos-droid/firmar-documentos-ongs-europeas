@@ -184,6 +184,15 @@
           </div>
         </div>
 
+        <!-- Document preview -->
+        <div class="doc-preview-section" id="doc-preview-section">
+          <label class="doc-preview-label">Document to sign</label>
+          <p class="doc-preview-hint">Please read the document before signing</p>
+          <div class="doc-preview-box" id="doc-preview-box">
+            <div class="doc-preview-loading">Loading document preview...</div>
+          </div>
+        </div>
+
         <!-- Signature -->
         <div class="signature-section">
           <label>Your signature *</label>
@@ -221,7 +230,26 @@
       <p>Thank you! Your adhesion document has been signed and submitted.</p>
       <p><strong>A signed copy has been sent to your email address.</strong></p>
       <p class="confirm-note">If you don't see it in your inbox within a few minutes, please check your spam folder.</p>
+      <a id="btn-download-pdf" class="btn-download" href="#" download style="display:none;">
+        &#8595; Download my signed copy
+      </a>
       <button class="btn-new" onclick="resetForm()">Sign another document</button>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 4: SECOND SIGNATURE PROMPT ===== -->
+  <div id="view-second-prompt" class="view">
+    <div class="container confirmation">
+      <div class="confirm-icon confirm-icon-info">&#33;</div>
+      <h1>One more document</h1>
+      <p id="second-prompt-text"></p>
+      <p>Your personal details are already filled in — you only need to add your signature.</p>
+      <div class="second-prompt-buttons">
+        <button class="btn-submit" id="btn-continue-second" onclick="startSecondFlow()">
+          Continue &rarr;
+        </button>
+        <button class="btn-new btn-new-skip" onclick="resetForm()">No thanks, finish</button>
+      </div>
     </div>
   </div>
 

@@ -396,6 +396,89 @@ body {
 }
 .error-msg.visible { display: block; }
 
+/* ===== DOCUMENT PREVIEW (Improvement 2) ===== */
+.doc-preview-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.doc-preview-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 2px;
+}
+.doc-preview-hint {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 10px;
+}
+.doc-preview-box {
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow: hidden;
+  background: #fafafa;
+}
+.doc-preview-iframe {
+  width: 100%;
+  height: 300px;
+  border: none;
+  display: block;
+  background: white;
+}
+.doc-preview-loading {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+/* ===== DOWNLOAD BUTTON (Improvement 1) ===== */
+.btn-download {
+  display: inline-block;
+  margin: 16px auto 8px;
+  background: #27ae60;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-download:hover {
+  background: #219a52;
+  transform: translateY(-1px);
+}
+
+/* ===== SECOND SIGNATURE PROMPT (Improvement 3) ===== */
+.confirm-icon-info {
+  background: #e67e22 !important;
+}
+.second-prompt-buttons {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.second-prompt-buttons .btn-submit {
+  max-width: 320px;
+}
+.btn-new-skip {
+  background: #888;
+  font-size: 14px;
+  padding: 10px 24px;
+}
+.btn-new-skip:hover {
+  background: #666;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .hero h1 { font-size: 22px; }

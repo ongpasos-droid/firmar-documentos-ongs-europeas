@@ -2,6 +2,11 @@
 let signaturePad;
 let currentAssociation = '';
 
+// State for sequential flow (Improvement 3)
+let firstSignatureData = null;   // personal data from first sign
+let firstSignatureAssoc = '';    // association already signed
+let lastSignatureId = null;      // DB id returned after successful sign
+
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('signature-pad');
   signaturePad = new SignaturePad(canvas, {
@@ -37,6 +42,35 @@ function showView(viewId) {
   window.scrollTo(0, 0);
 }
 
+// ===== IMPROVEMENT 2: DOCUMENT PREVIEW =====
+
+async function loadDocumentPreview(assoc) {
+  const previewBox = document.getElementById('doc-preview-box');
+  previewBox.innerHTML = '<div class="doc-preview-loading">Loading document preview...</div>';
+  try {
+    const response = await fetch(`/api/preview/${assoc}`);
+    if (!response.ok) throw new Error('Could not load preview');
+    const html = await response.text();
+
+    // Render in an isolated iframe so template styles don't bleed into the app
+    const iframe = document.createElement('iframe');
+    iframe.className = 'doc-preview-iframe';
+    iframe.setAttribute('sandbox', 'allow-same-origin');
+    iframe.setAttribute('title', 'Document preview');
+    previewBox.innerHTML = '';
+    previewBox.appendChild(iframe);
+
+    // Write content after appending to DOM
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+  } catch (err) {
+    previewBox.innerHTML = '<div class="doc-preview-loading" style="color:#c0392b;">Could not load document preview.</div>';
+  }
+}
+
+// ===== ASSOCIATION SELECTION =====
+
 function selectAssociation(assoc) {
   currentAssociation = assoc;
   document.getElementById('association').value = assoc;
@@ -63,6 +97,9 @@ function selectAssociation(assoc) {
 
   showView('view-form');
   setTimeout(resizeCanvas, 100);
+
+  // Improvement 2: load document preview for selected association
+  loadDocumentPreview(assoc);
 }
 
 function goBack() {
@@ -141,7 +178,48 @@ async function submitForm() {
     const result = await response.json();
 
     if (response.ok && result.success) {
-      showView('view-confirmation');
+      // Improvement 1: set download link if ID returned
+      lastSignatureId = result.signatureId || null;
+      const btnDownload = document.getElementById('btn-download-pdf');
+      if (lastSignatureId) {
+        btnDownload.href = `/api/download/${lastSignatureId}`;
+        btnDownload.style.display = 'inline-block';
+      } else {
+        btnDownload.style.display = 'none';
+      }
+
+      // Improvement 3: check if sequential flow is needed
+      const isSecondFlow = (firstSignatureData !== null);
+
+      if (!isSecondFlow) {
+        // First signature: save personal data and check if second is available
+        firstSignatureData = { ...data };
+        firstSignatureAssoc = currentAssociation;
+        const otherAssoc = currentAssociation === 'eudicas' ? 'euemotion' : 'eudicas';
+        const otherAssocName = otherAssoc === 'eudicas'
+          ? 'EUDICAS (European Union Development, Innovation and Cooperation Association)'
+          : 'EUEMOTION (European Association for Emotional Management)';
+
+        showView('view-confirmation');
+
+        // Show second-signature prompt after a short delay
+        setTimeout(() => {
+          document.getElementById('second-prompt-text').textContent =
+            `You have signed for ${currentAssociation.toUpperCase()}. You also need to sign the adhesion document for ${otherAssocName}. Would you like to continue?`;
+          const continueBtn = document.getElementById('btn-continue-second');
+          continueBtn.className = otherAssoc === 'euemotion'
+            ? 'btn-submit euemotion'
+            : 'btn-submit';
+          continueBtn.dataset.nextAssoc = otherAssoc;
+          showView('view-second-prompt');
+        }, 3000);
+
+      } else {
+        // Second (or subsequent) signature: just show confirmation and stay there
+        firstSignatureData = null;
+        firstSignatureAssoc = '';
+        showView('view-confirmation');
+      }
     } else {
       showError(result.error || 'An error occurred. Please try again.');
     }
@@ -152,6 +230,69 @@ async function submitForm() {
     document.getElementById('loading-overlay').classList.remove('active');
   }
 }
+
+// ===== IMPROVEMENT 3: START SECOND FLOW =====
+
+function startSecondFlow() {
+  if (!firstSignatureData) return;
+
+  const btn = document.getElementById('btn-continue-second');
+  const nextAssoc = btn.dataset.nextAssoc || (firstSignatureAssoc === 'eudicas' ? 'euemotion' : 'eudicas');
+
+  // Pre-fill form with saved personal data
+  document.getElementById('representative_name').value = firstSignatureData.representative_name || '';
+  document.getElementById('role').value = firstSignatureData.role || '';
+  document.getElementById('entity_name').value = firstSignatureData.entity_name || '';
+  document.getElementById('address').value = firstSignatureData.address || '';
+  document.getElementById('postal_code').value = firstSignatureData.postal_code || '';
+  document.getElementById('city').value = firstSignatureData.city || '';
+  document.getElementById('country').value = firstSignatureData.country || '';
+  document.getElementById('email').value = firstSignatureData.email || '';
+  document.getElementById('phone').value = firstSignatureData.phone || '';
+
+  // Uncheck accept checkbox so user explicitly re-accepts for the new document
+  document.getElementById('accept').checked = false;
+
+  // Switch to the new association
+  currentAssociation = nextAssoc;
+  document.getElementById('association').value = nextAssoc;
+
+  const title = document.getElementById('form-title');
+  const submitBtn = document.getElementById('btn-submit');
+
+  if (nextAssoc === 'eudicas') {
+    title.textContent = 'EUDICAS — Adhesion Form';
+    title.className = 'form-title';
+    submitBtn.className = 'btn-submit';
+  } else {
+    title.textContent = 'EUEMOTION — Adhesion Form';
+    title.className = 'form-title euemotion';
+    submitBtn.className = 'btn-submit euemotion';
+  }
+
+  document.querySelectorAll('.form-group input, .form-group select').forEach(el => {
+    el.classList.toggle('euemotion', nextAssoc === 'euemotion');
+  });
+  document.querySelector('.checkbox-label input').style.accentColor =
+    nextAssoc === 'euemotion' ? '#6B2D8B' : '#003399';
+
+  // Reset signature pad
+  signaturePad.clear();
+
+  showView('view-form');
+  setTimeout(resizeCanvas, 100);
+
+  // Load the preview for the new association
+  loadDocumentPreview(nextAssoc);
+
+  // Scroll to signature section after brief delay
+  setTimeout(() => {
+    const sigSection = document.querySelector('.signature-section');
+    if (sigSection) sigSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+}
+
+// ===== HELPERS =====
 
 function showError(message) {
   // Remove existing error
@@ -172,5 +313,9 @@ function resetForm() {
   document.getElementById('adhesion-form').reset();
   signaturePad.clear();
   currentAssociation = '';
+  firstSignatureData = null;
+  firstSignatureAssoc = '';
+  lastSignatureId = null;
+  document.getElementById('btn-download-pdf').style.display = 'none';
   showView('view-landing');
 }

@@ -113,7 +113,7 @@ async function getBrowser() {
   if (!browserInstance || !browserInstance.isConnected()) {
     browserInstance = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
     });
   }
   return browserInstance;
@@ -286,7 +286,7 @@ app.post('/api/sign', signLimiter, async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    stmt.run(
+    const result = stmt.run(
       association.toUpperCase(),
       data.representative_name,
       data.role,
@@ -306,12 +306,50 @@ app.post('/api/sign', signLimiter, async (req, res) => {
     res.json({
       success: true,
       message: 'Document signed and sent successfully.',
-      emailSent: emailResults.signee
+      emailSent: emailResults.signee,
+      signatureId: result.lastInsertRowid
     });
 
   } catch (err) {
     console.error('Signing error:', err);
     res.status(500).json({ error: 'An error occurred while processing your signature. Please try again.' });
+  }
+});
+
+// Download signed PDF endpoint (public, requires valid signature ID)
+app.get('/api/download/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id || isNaN(id) || id <= 0) {
+    return res.status(400).json({ error: 'Invalid signature ID.' });
+  }
+  const row = db.prepare('SELECT * FROM signatures WHERE id = ?').get(id);
+  if (!row || !fs.existsSync(row.pdf_path)) {
+    return res.status(404).json({ error: 'Signed document not found.' });
+  }
+  const safeName = row.entity_name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+  const filename = `Adhesion_${row.association}_${safeName}.pdf`;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.sendFile(path.resolve(row.pdf_path));
+});
+
+// Document preview endpoint — returns plain text content of a template
+app.get('/api/preview/:association', (req, res) => {
+  const assoc = req.params.association.toLowerCase();
+  if (!['eudicas', 'euemotion'].includes(assoc)) {
+    return res.status(400).json({ error: 'Invalid association.' });
+  }
+  const templateFile = assoc === 'eudicas'
+    ? 'adhesion-eudicas.html'
+    : 'adhesion-euemotion.html';
+  try {
+    let html = fs.readFileSync(path.join(__dirname, 'templates', templateFile), 'utf8');
+    // Strip placeholder tokens so preview shows clean template text
+    html = html.replace(/\{\{[^}]+\}\}/g, '___');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (err) {
+    res.status(500).json({ error: 'Could not load document preview.' });
   }
 });
 
